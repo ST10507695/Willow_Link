@@ -1,5 +1,10 @@
 package com.mycompany.willow_link;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class Message {
@@ -13,6 +18,14 @@ public final class Message {
 
     // Keeps track of successfully sent messages
     private static int totalMessagesSent = 0;
+
+    // Stores messages selected for JSON storage
+    private static final ArrayList<Message> storedMessages
+            = new ArrayList<>();
+
+    // Name of the JSON file
+    private static final String JSON_FILE
+            = "stored_messages.json";
 
     // Constructor
     public Message(int messageNumber, String recipient, String messageText) {
@@ -72,7 +85,6 @@ public final class Message {
     }
 
     // Getters
-
     public String getMessageID() {
         return messageID;
     }
@@ -93,66 +105,92 @@ public final class Message {
         return messageHash;
     }
 
+    // Checks whether the recipient cellphone number is correctly formatted
+    public String checkRecipientCell() {
 
-// Checks whether the recipient cellphone number is correctly formatted
-public String checkRecipientCell() {
+        if (recipient != null
+                && recipient.matches("^\\+27\\d{9}$")) {
 
-    if (recipient != null && recipient.matches("^\\+27\\d{9}$")) {
-        return "Cell phone number successfully captured.";
+            return "Cell phone number successfully captured.";
+        }
+
+        return "Cell phone number is incorrectly formatted or does not contain "
+                + "an international code. Please correct the number and try again.";
     }
 
-    return "Cell phone number is incorrectly formatted or does not contain "
-            + "an international code. Please correct the number and try again.";
-}
+    // Checks whether the message is no more than 250 characters
+    public String checkMessageLength() {
 
+        if (messageText.length() <= 250) {
+            return "Message ready to send.";
+        }
 
-// Checks whether the message is no more than 250 characters
-public String checkMessageLength() {
+        int extraCharacters = messageText.length() - 250;
 
-    if (messageText.length() <= 250) {
-        return "Message ready to send.";
+        return "Message exceeds 250 characters by "
+                + extraCharacters
+                + "; please reduce the size.";
     }
 
-    int extraCharacters = messageText.length() - 250;
+    // Allows the user to send, disregard or store a message
+    public String SentMessage(int option) {
 
-    return "Message exceeds 250 characters by "
-            + extraCharacters
-            + "; please reduce the size.";
-}
-public String SentMessage(int option) {
+        switch (option) {
 
-    switch (option) {
-        case 1 -> {
-            totalMessagesSent++;
-            return "Message successfully sent.";
+            case 1 -> {
+                totalMessagesSent++;
+                return "Message successfully sent.";
             }
 
-        case 2 -> {
-            return "Press 0 to delete the message.";
+            case 2 -> {
+                return "Press 0 to delete the message.";
             }
 
-        case 3 -> {
-            return "Message successfully stored.";
+            case 3 -> {
+                storeMessage();
+                return "Message successfully stored.";
             }
 
-        default -> {
-            return "Invalid option.";
+            default -> {
+                return "Invalid option.";
             }
+        }
     }
-}
 
-// Returns all the details of the message
-public String printMessages() {
+    // Stores the current message in a JSON file
+    public void storeMessage() {
 
-    return "Message ID: " + messageID
-            + "\nMessage Hash: " + messageHash
-            + "\nRecipient: " + recipient
-            + "\nMessage: " + messageText;
-}
+        storedMessages.add(this);
 
-// Returns the total number of messages successfully sent
-public static int returnTotalMessagess() {
-    return totalMessagesSent;
-}
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .create();
+
+        try (FileWriter writer = new FileWriter(JSON_FILE)) {
+
+            gson.toJson(storedMessages, writer);
+
+        } catch (IOException e) {
+
+            System.out.println(
+                    "Error storing message: "
+                    + e.getMessage()
+            );
+        }
+    }
+
+    // Returns all the details of the message
+    public String printMessages() {
+
+        return "Message ID: " + messageID
+                + "\nMessage Hash: " + messageHash
+                + "\nRecipient: " + recipient
+                + "\nMessage: " + messageText;
+    }
+
+    // Returns the total number of messages successfully sent
+    public static int returnTotalMessagess() {
+        return totalMessagesSent;
+    }
 
 } // End of Message class
