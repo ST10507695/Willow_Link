@@ -1,9 +1,44 @@
 [
   {
-    "messageID": "3467906128",
+    "messageID": "9894440175",
     "messageNumber": 0,
     "recipient": "+27718693002",
     "messageText": "Hi Mike, can you join us for dinner tonight?",
-    "messageHash": "34:0:HITONIGHT"
+    "messageHash": "98:0:HITONIGHT"
+  },
+  {
+    "messageID": "1834829138",
+    "messageNumber": 27,
+    "recipient": "+27838884567",
+    "messageText": "Stored report message",
+    "messageHash": "18:27:STOREDMESSAGE"
+  },
+  {
+    "messageID": "9316825560",
+    "messageNumber": 21,
+    "recipient": "+27838884567",
+    "messageText": "Ok, I am leaving without you.",
+    "messageHash": "93:21:OKYOU"
+  },
+  {
+    "messageID": "7834533664",
+    "messageNumber": 22,
+    "recipient": "+27838884567",
+    "messageText": "Where are you? You are late! I have asked you to be on time.",
+    "messageHash": "78:22:WHERETIME"
+  },
+  {
+    "messageID": "7036126448",
+    "messageNumber": 24,
+    "recipient": "+27838884567",
+    "messageText": "Where are you? You are late! I have asked you to be on time.",
+    "messageHash": "70:24:WHERETIME"
+  },
+  {
+    "messageID": "3315158703",
+    "messageNumber": 25,
+    "recipient": "+27838884567",
+    "messageText": "Ok, I am leaving without you.",
+    "messageHash": "33:25:OKYOU"
   }
 ]

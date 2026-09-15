@@ -247,5 +247,181 @@ public final class Message {
     public static ArrayList<String> getMessageIDs() {
         return messageIDs;
     }
+// ==========================================================
+// PART 3 - MESSAGE MANAGEMENT METHODS
+// ==========================================================
 
+// Displays all successfully sent messages
+public static String displaySentMessages() {
+
+    if (sentMessages.isEmpty()) {
+        return "No sent messages available.";
+    }
+
+    StringBuilder result = new StringBuilder();
+
+    for (Message message : sentMessages) {
+        result.append(message.getMessageText())
+              .append("\n");
+    }
+
+    return result.toString();
+}
+
+
+// Finds the longest stored message
+public static String getLongestStoredMessage() {
+
+    if (storedMessages.isEmpty()) {
+        return "No stored messages available.";
+    }
+
+    Message longestMessage = storedMessages.get(0);
+
+    for (Message message : storedMessages) {
+
+        if (message.getMessageText().length()
+                > longestMessage.getMessageText().length()) {
+
+            longestMessage = message;
+        }
+    }
+
+    return longestMessage.getMessageText();
+}
+
+
+// Searches for a message using the Message ID
+public static String searchByMessageID(String searchID) {
+
+    // Search sent messages
+    for (Message message : sentMessages) {
+
+        if (message.getMessageID().equals(searchID)) {
+
+            return "Recipient: "
+                    + message.getRecipient()
+                    + "\nMessage: "
+                    + message.getMessageText();
+        }
+    }
+
+    // Search stored messages
+    for (Message message : storedMessages) {
+
+        if (message.getMessageID().equals(searchID)) {
+
+            return "Recipient: "
+                    + message.getRecipient()
+                    + "\nMessage: "
+                    + message.getMessageText();
+        }
+    }
+
+    return "Message ID not found.";
+}
+
+
+// Searches stored messages using the recipient cellphone number
+public static String searchByRecipient(String searchRecipient) {
+
+    StringBuilder result = new StringBuilder();
+
+    for (Message message : storedMessages) {
+
+        if (message.getRecipient().equals(searchRecipient)) {
+
+            result.append(message.getMessageText())
+                  .append("\n");
+        }
+    }
+
+    if (result.length() == 0) {
+        return "No messages found for this recipient.";
+    }
+
+    return result.toString();
+}
+
+
+// Deletes a stored message using its Message Hash
+public static String deleteByMessageHash(String searchHash) {
+
+    for (int i = 0; i < storedMessages.size(); i++) {
+
+        Message message = storedMessages.get(i);
+
+        if (message.getMessageHash().equals(searchHash)) {
+
+            storedMessages.remove(i);
+
+            messageHashes.remove(message.getMessageHash());
+            messageIDs.remove(message.getMessageID());
+
+            // Update the JSON file after deletion
+            saveStoredMessagesToJSON();
+
+            return "Message successfully deleted.";
+        }
+    }
+
+    return "Message Hash not found.";
+}
+
+
+// Creates a complete report of stored messages
+public static String displayStoredMessageReport() {
+
+    if (storedMessages.isEmpty()) {
+        return "No stored messages available.";
+    }
+
+    StringBuilder report = new StringBuilder();
+
+    report.append("========== STORED MESSAGE REPORT ==========\n");
+
+    for (Message message : storedMessages) {
+
+        report.append("Message ID: ")
+              .append(message.getMessageID())
+              .append("\n");
+
+        report.append("Message Hash: ")
+              .append(message.getMessageHash())
+              .append("\n");
+
+        report.append("Recipient: ")
+              .append(message.getRecipient())
+              .append("\n");
+
+        report.append("Message: ")
+              .append(message.getMessageText())
+              .append("\n");
+
+        report.append("-------------------------------------------\n");
+    }
+
+    return report.toString();
+}
+
+
+// Saves the current stored message list back to the JSON file
+private static void saveStoredMessagesToJSON() {
+
+    Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .create();
+
+    try (FileWriter writer = new FileWriter(JSON_FILE)) {
+
+        gson.toJson(storedMessages, writer);
+
+    } catch (IOException e) {
+
+        System.out.println(
+                "Error updating stored messages: "
+                + e.getMessage()
+        );
+    }
+}
 } // End of Message class

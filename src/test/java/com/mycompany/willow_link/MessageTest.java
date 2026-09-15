@@ -126,4 +126,156 @@ public class MessageTest {
                 "Hi Mike, can you join us for dinner tonight?"
         ));
     }
+// ==========================================================
+// PART 3 UNIT TESTS
+// ==========================================================
+
+@Test
+public void testDisplaySentMessages() {
+
+    Message message = new Message(
+            20,
+            "+27834557896",
+            "Did you get the cake?"
+    );
+
+    message.SentMessage(1);
+
+    String result = Message.displaySentMessages();
+
+    assertTrue(
+            result.contains("Did you get the cake?")
+    );
+}
+
+
+@Test
+public void testLongestStoredMessage() {
+
+    Message shortMessage = new Message(
+            21,
+            "+27838884567",
+            "Ok, I am leaving without you."
+    );
+
+    Message longMessage = new Message(
+            22,
+            "+27838884567",
+            "Where are you? You are late! I have asked you to be on time."
+    );
+
+    shortMessage.SentMessage(3);
+    longMessage.SentMessage(3);
+
+    String result = Message.getLongestStoredMessage();
+
+    assertEquals(
+            "Where are you? You are late! I have asked you to be on time.",
+            result
+    );
+}
+
+
+@Test
+public void testSearchByMessageID() {
+
+    Message message = new Message(
+            23,
+            "+27834557896",
+            "It is dinner time!"
+    );
+
+    message.SentMessage(1);
+
+    String result = Message.searchByMessageID(
+            message.getMessageID()
+    );
+
+    assertTrue(
+            result.contains("It is dinner time!")
+    );
+
+    assertTrue(
+            result.contains("+27834557896")
+    );
+}
+
+
+@Test
+public void testSearchByRecipient() {
+
+    Message message1 = new Message(
+            24,
+            "+27838884567",
+            "Where are you? You are late! I have asked you to be on time."
+    );
+
+    Message message2 = new Message(
+            25,
+            "+27838884567",
+            "Ok, I am leaving without you."
+    );
+
+    message1.SentMessage(3);
+    message2.SentMessage(3);
+
+    String result = Message.searchByRecipient(
+            "+27838884567"
+    );
+
+    assertTrue(
+            result.contains(
+                    "Where are you? You are late! I have asked you to be on time."
+            )
+    );
+
+    assertTrue(
+            result.contains(
+                    "Ok, I am leaving without you."
+            )
+    );
+}
+
+
+@Test
+public void testDeleteByMessageHash() {
+
+    Message message = new Message(
+            26,
+            "+27838884567",
+            "Message to delete"
+    );
+
+    message.SentMessage(3);
+
+    String result = Message.deleteByMessageHash(
+            message.getMessageHash()
+    );
+
+    assertEquals(
+            "Message successfully deleted.",
+            result
+    );
+}
+
+
+@Test
+public void testStoredMessageReport() {
+
+    Message message = new Message(
+            27,
+            "+27838884567",
+            "Stored report message"
+    );
+
+    message.SentMessage(3);
+
+    String result =
+            Message.displayStoredMessageReport();
+
+    assertTrue(result.contains("Message ID:"));
+    assertTrue(result.contains("Message Hash:"));
+    assertTrue(result.contains("+27838884567"));
+    assertTrue(result.contains("Stored report message"));
+}
 }
