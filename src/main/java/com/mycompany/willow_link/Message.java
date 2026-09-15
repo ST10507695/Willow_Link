@@ -2,14 +2,17 @@ package com.mycompany.willow_link;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Message {
+public final class Message {
 
     // Variables used to store message information
-    private String messageID;
-    private int messageNumber;
-    private String recipient;
-    private String messageText;
-    private String messageHash;
+    private final String messageID;
+    private final int messageNumber;
+    private final String recipient;
+    private final String messageText;
+    private final String messageHash;
+
+    // Keeps track of successfully sent messages
+    private static int totalMessagesSent = 0;
 
     // Constructor
     public Message(int messageNumber, String recipient, String messageText) {
@@ -116,5 +119,40 @@ public String checkMessageLength() {
             + extraCharacters
             + "; please reduce the size.";
 }
+public String SentMessage(int option) {
 
+    switch (option) {
+        case 1 -> {
+            totalMessagesSent++;
+            return "Message successfully sent.";
+            }
+
+        case 2 -> {
+            return "Press 0 to delete the message.";
+            }
+
+        case 3 -> {
+            return "Message successfully stored.";
+            }
+
+        default -> {
+            return "Invalid option.";
+            }
+    }
 }
+
+// Returns all the details of the message
+public String printMessages() {
+
+    return "Message ID: " + messageID
+            + "\nMessage Hash: " + messageHash
+            + "\nRecipient: " + recipient
+            + "\nMessage: " + messageText;
+}
+
+// Returns the total number of messages successfully sent
+public static int returnTotalMessagess() {
+    return totalMessagesSent;
+}
+
+} // End of Message class

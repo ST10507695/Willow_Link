@@ -19,7 +19,10 @@ public class Willow_Link {
         System.out.println();
         System.out.println("Welcome to Willow Link!");
 
-        // Registration section
+        // =========================================
+        // PART 1 - REGISTRATION
+        // =========================================
+
         System.out.println();
         System.out.println("========== REGISTRATION ==========");
 
@@ -101,29 +104,229 @@ public class Willow_Link {
         // Display final registration result
         System.out.println();
         System.out.println(user.registerUser());
-        // Continue to login only if registration is successful
-if (user.checkUserName()
-        && user.checkPasswordComplexity()
-        && user.checkCellPhoneNumber()) {
 
-    System.out.println();
-    System.out.println("============== LOGIN ==============");
+        // =========================================
+        // LOGIN
+        // =========================================
 
-    System.out.print("Enter your username: ");
-    String loginUsername = input.nextLine();
+        if (user.checkUserName()
+                && user.checkPasswordComplexity()
+                && user.checkCellPhoneNumber()) {
 
-    System.out.print("Enter your password: ");
-    String loginPassword = input.nextLine();
+            System.out.println();
+            System.out.println("============== LOGIN ==============");
 
-    System.out.println();
+            System.out.print("Enter your username: ");
+            String loginUsername = input.nextLine();
 
-    System.out.println(
-            user.returnLoginStatus(
-                    loginUsername,
-                    loginPassword
-            )
-    );
-}
+            System.out.print("Enter your password: ");
+            String loginPassword = input.nextLine();
+
+            System.out.println();
+
+            System.out.println(
+                    user.returnLoginStatus(
+                            loginUsername,
+                            loginPassword
+                    )
+            );
+
+            // Continue only if login is successful
+            if (user.loginUser(loginUsername, loginPassword)) {
+
+                // =========================================
+                // PART 2 - QUICKCHAT
+                // =========================================
+
+                System.out.println();
+                System.out.println("Welcome to QuickChat.");
+
+                System.out.print(
+                        "How many messages would you like to enter? "
+                );
+
+                int numberOfMessages = input.nextInt();
+                input.nextLine();
+
+                int menuChoice = 0;
+
+                // Keep menu running until user selects Quit
+                while (menuChoice != 3) {
+
+                    System.out.println();
+                    System.out.println(
+                            "========== QUICKCHAT MENU =========="
+                    );
+                    System.out.println("1. Send Messages");
+                    System.out.println(
+                            "2. Show recently sent messages"
+                    );
+                    System.out.println("3. Quit");
+
+                    System.out.print("Enter your choice: ");
+                    menuChoice = input.nextInt();
+                    input.nextLine();
+
+                    switch (menuChoice) {
+
+                        case 1:
+
+                            // Required FOR loop for message entry
+                            for (int i = 0;
+                                    i < numberOfMessages;
+                                    i++) {
+
+                                System.out.println();
+                                System.out.println(
+                                        "========== MESSAGE "
+                                        + (i + 1)
+                                        + " =========="
+                                );
+
+                                System.out.print(
+                                        "Enter recipient cellphone "
+                                        + "number (+27): "
+                                );
+
+                                String recipient =
+                                        input.nextLine();
+
+                                System.out.print(
+                                        "Enter your message: "
+                                );
+
+                                String messageText =
+                                        input.nextLine();
+
+                                // Create Message object
+                                Message message =
+                                        new Message(
+                                                i,
+                                                recipient,
+                                                messageText
+                                        );
+
+                                System.out.println();
+
+                                // Display Message ID
+                                System.out.println(
+                                        "Message ID generated: "
+                                        + message.getMessageID()
+                                );
+
+                                // Check Message ID
+                                if (message.checkMessageID()) {
+
+                                    System.out.println(
+                                            "Message ID successfully "
+                                            + "generated."
+                                    );
+                                }
+
+                                // Check recipient
+                                System.out.println(
+                                        message.checkRecipientCell()
+                                );
+
+                                // Check message length
+                                System.out.println(
+                                        message.checkMessageLength()
+                                );
+
+                                // Display Message Hash
+                                System.out.println(
+                                        "Message Hash: "
+                                        + message.getMessageHash()
+                                );
+
+                                // Ask what should happen
+                                System.out.println();
+                                System.out.println(
+                                        "What would you like to do?"
+                                );
+                                System.out.println(
+                                        "1. Send Message"
+                                );
+                                System.out.println(
+                                        "2. Disregard Message"
+                                );
+                                System.out.println(
+                                        "3. Store Message"
+                                );
+
+                                System.out.print(
+                                        "Enter your choice: "
+                                );
+
+                                int messageChoice =
+                                        input.nextInt();
+
+                                input.nextLine();
+
+                                // Display result
+                                System.out.println(
+                                        message.SentMessage(
+                                                messageChoice
+                                        )
+                                );
+
+                                // Print details if message was sent
+                                if (messageChoice == 1) {
+
+                                    System.out.println();
+                                    System.out.println(
+                                            "MESSAGE DETAILS"
+                                    );
+
+                                    System.out.println(
+                                            message.printMessages()
+                                    );
+                                }
+                            }
+
+                            System.out.println();
+
+                            System.out.println(
+                                    "Total messages sent: "
+                                    + Message.returnTotalMessagess()
+                            );
+
+                            break;
+
+                        case 2:
+
+                            System.out.println();
+                            System.out.println("Coming Soon.");
+
+                            break;
+
+                        case 3:
+
+                            System.out.println();
+                            System.out.println(
+                                    "Thank you for using Willow Link."
+                            );
+
+                            break;
+
+                        default:
+
+                            System.out.println();
+                            System.out.println(
+                                    "Invalid option. "
+                                    + "Please select 1, 2 or 3."
+                            );
+                    }
+                }
+
+            } else {
+
+                System.out.println(
+                        "Login unsuccessful. "
+                        + "QuickChat cannot be opened."
+                );
+            }
+        }
 
         input.close();
     }
