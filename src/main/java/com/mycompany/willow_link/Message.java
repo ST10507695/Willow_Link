@@ -19,8 +19,20 @@ public final class Message {
     // Keeps track of successfully sent messages
     private static int totalMessagesSent = 0;
 
-    // Stores messages selected for JSON storage
+    // Part 3 arrays used to manage message data
+    private static final ArrayList<Message> sentMessages
+            = new ArrayList<>();
+
+    private static final ArrayList<Message> disregardedMessages
+            = new ArrayList<>();
+
     private static final ArrayList<Message> storedMessages
+            = new ArrayList<>();
+
+    private static final ArrayList<String> messageHashes
+            = new ArrayList<>();
+
+    private static final ArrayList<String> messageIDs
             = new ArrayList<>();
 
     // Name of the JSON file
@@ -121,7 +133,7 @@ public final class Message {
     // Checks whether the message is no more than 250 characters
     public String checkMessageLength() {
 
-        if (messageText.length() <= 250) {
+        if (messageText != null && messageText.length() <= 250) {
             return "Message ready to send.";
         }
 
@@ -138,16 +150,34 @@ public final class Message {
         switch (option) {
 
             case 1 -> {
+
+                sentMessages.add(this);
+                messageHashes.add(messageHash);
+                messageIDs.add(messageID);
+
                 totalMessagesSent++;
+
                 return "Message successfully sent.";
             }
 
             case 2 -> {
+
+                disregardedMessages.add(this);
+                messageHashes.add(messageHash);
+                messageIDs.add(messageID);
+
                 return "Press 0 to delete the message.";
             }
 
             case 3 -> {
+
+                // storeMessage adds the message to storedMessages
+                // and saves the array to the JSON file.
                 storeMessage();
+
+                messageHashes.add(messageHash);
+                messageIDs.add(messageID);
+
                 return "Message successfully stored.";
             }
 
@@ -157,7 +187,7 @@ public final class Message {
         }
     }
 
-    // Stores the current message in a JSON file
+    // Stores the current message in the JSON file
     public void storeMessage() {
 
         storedMessages.add(this);
@@ -188,9 +218,34 @@ public final class Message {
                 + "\nMessage: " + messageText;
     }
 
-    // Returns the total number of messages successfully sent
+    // Returns the total number of successfully sent messages
     public static int returnTotalMessagess() {
         return totalMessagesSent;
+    }
+
+    // Returns the sent messages array
+    public static ArrayList<Message> getSentMessages() {
+        return sentMessages;
+    }
+
+    // Returns the disregarded messages array
+    public static ArrayList<Message> getDisregardedMessages() {
+        return disregardedMessages;
+    }
+
+    // Returns the stored messages array
+    public static ArrayList<Message> getStoredMessages() {
+        return storedMessages;
+    }
+
+    // Returns the message hashes array
+    public static ArrayList<String> getMessageHashes() {
+        return messageHashes;
+    }
+
+    // Returns the message IDs array
+    public static ArrayList<String> getMessageIDs() {
+        return messageIDs;
     }
 
 } // End of Message class
