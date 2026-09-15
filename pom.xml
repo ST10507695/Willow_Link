@@ -29,6 +29,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Gson used to store Willow Link messages in JSON format -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+
     </dependencies>
 
 </project>
