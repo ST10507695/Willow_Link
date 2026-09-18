@@ -198,12 +198,13 @@ public class Willow_Link {
                                         input.nextLine();
 
                                 // Create Message object
-                                Message message =
-                                        new Message(
-                                                i,
-                                                recipient,
-                                                messageText
-                                        );
+Message message =
+        new Message(
+                i,
+                user.getCellPhoneNumber(),
+                recipient,
+                messageText
+        );
 
                                 System.out.println();
 

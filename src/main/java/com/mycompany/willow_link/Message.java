@@ -9,9 +9,16 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public final class Message {
 
-    // Variables used to store message information
+    // ==========================================================
+    // MESSAGE VARIABLES
+    // ==========================================================
+
     private final String messageID;
     private final int messageNumber;
+
+    // Part 3(a) - Sender added
+    private final String sender;
+
     private final String recipient;
     private final String messageText;
     private final String messageHash;
@@ -19,7 +26,11 @@ public final class Message {
     // Keeps track of successfully sent messages
     private static int totalMessagesSent = 0;
 
-    // Part 3 arrays used to manage message data
+
+    // ==========================================================
+    // PART 3 ARRAYS
+    // ==========================================================
+
     private static final ArrayList<Message> sentMessages
             = new ArrayList<>();
 
@@ -35,23 +46,68 @@ public final class Message {
     private static final ArrayList<String> messageIDs
             = new ArrayList<>();
 
-    // Name of the JSON file
+
+    // ==========================================================
+    // JSON FILE
+    // ==========================================================
+
     private static final String JSON_FILE
             = "stored_messages.json";
 
-    // Constructor
-    public Message(int messageNumber, String recipient, String messageText) {
+
+    // ==========================================================
+    // CONSTRUCTORS
+    // ==========================================================
+
+    /*
+     * Main constructor.
+     * Includes sender for Part 3(a).
+     */
+    public Message(
+            int messageNumber,
+            String sender,
+            String recipient,
+            String messageText) {
 
         this.messageNumber = messageNumber;
+        this.sender = sender;
         this.recipient = recipient;
         this.messageText = messageText;
 
         // Generate a random 10-digit Message ID
         this.messageID = generateMessageID();
 
-        // Create the message hash
+        // Create the Message Hash
         this.messageHash = createMessageHash();
     }
+
+
+    /*
+     * Compatibility constructor.
+     *
+     * This allows the existing tests and existing code that use:
+     *
+     * new Message(messageNumber, recipient, messageText)
+     *
+     * to continue working.
+     */
+    public Message(
+            int messageNumber,
+            String recipient,
+            String messageText) {
+
+        this(
+                messageNumber,
+                "",
+                recipient,
+                messageText
+        );
+    }
+
+
+    // ==========================================================
+    // MESSAGE ID
+    // ==========================================================
 
     // Generates a random 10-digit Message ID
     private String generateMessageID() {
@@ -64,27 +120,55 @@ public final class Message {
         return String.valueOf(randomID);
     }
 
-    // Checks that the Message ID contains 10 digits
+
+    // Checks that the Message ID contains exactly 10 digits
     public boolean checkMessageID() {
 
         return messageID != null
                 && messageID.matches("\\d{10}");
     }
 
-    // Creates the Message Hash
+
+    // ==========================================================
+    // MESSAGE HASH
+    // ==========================================================
+
+    /*
+     * Creates the Message Hash.
+     *
+     * Format:
+     * First two digits of Message ID
+     * :
+     * Message number
+     * :
+     * First word + last word
+     *
+     * Example:
+     * 00:0:HITONIGHT
+     */
     public String createMessageHash() {
 
-        if (messageText == null || messageText.trim().isEmpty()) {
+        if (messageText == null
+                || messageText.trim().isEmpty()) {
+
             return "";
         }
 
-        String[] words = messageText.trim().split("\\s+");
+        String[] words
+                = messageText.trim().split("\\s+");
 
-        String firstWord = words[0]
-                .replaceAll("[^a-zA-Z0-9]", "");
+        String firstWord
+                = words[0].replaceAll(
+                        "[^a-zA-Z0-9]",
+                        ""
+                );
 
-        String lastWord = words[words.length - 1]
-                .replaceAll("[^a-zA-Z0-9]", "");
+        String lastWord
+                = words[words.length - 1]
+                        .replaceAll(
+                                "[^a-zA-Z0-9]",
+                                ""
+                        );
 
         return (
                 messageID.substring(0, 2)
@@ -96,28 +180,51 @@ public final class Message {
                 ).toUpperCase();
     }
 
-    // Getters
+
+    // ==========================================================
+    // GETTERS
+    // ==========================================================
+
     public String getMessageID() {
         return messageID;
     }
+
 
     public int getMessageNumber() {
         return messageNumber;
     }
 
+
+    // Part 3(a)
+    public String getSender() {
+        return sender;
+    }
+
+
     public String getRecipient() {
         return recipient;
     }
+
 
     public String getMessageText() {
         return messageText;
     }
 
+
     public String getMessageHash() {
         return messageHash;
     }
 
-    // Checks whether the recipient cellphone number is correctly formatted
+
+    // ==========================================================
+    // RECIPIENT VALIDATION
+    // ==========================================================
+
+    /*
+     * Checks whether the recipient cellphone number
+     * contains the South African international code +27
+     * followed by 9 digits.
+     */
     public String checkRecipientCell() {
 
         if (recipient != null
@@ -130,21 +237,41 @@ public final class Message {
                 + "an international code. Please correct the number and try again.";
     }
 
-    // Checks whether the message is no more than 250 characters
+
+    // ==========================================================
+    // MESSAGE LENGTH VALIDATION
+    // ==========================================================
+
+    /*
+     * Checks that the message contains no more
+     * than 250 characters.
+     */
     public String checkMessageLength() {
 
-        if (messageText != null && messageText.length() <= 250) {
+        if (messageText != null
+                && messageText.length() <= 250) {
+
             return "Message ready to send.";
         }
 
-        int extraCharacters = messageText.length() - 250;
+        int extraCharacters
+                = messageText.length() - 250;
 
         return "Message exceeds 250 characters by "
                 + extraCharacters
                 + "; please reduce the size.";
     }
 
-    // Allows the user to send, disregard or store a message
+
+    // ==========================================================
+    // SEND / DISREGARD / STORE MESSAGE
+    // ==========================================================
+
+    /*
+     * Option 1 = Send Message
+     * Option 2 = Disregard Message
+     * Option 3 = Store Message
+     */
     public String SentMessage(int option) {
 
         switch (option) {
@@ -152,53 +279,87 @@ public final class Message {
             case 1 -> {
 
                 sentMessages.add(this);
-                messageHashes.add(messageHash);
-                messageIDs.add(messageID);
+
+                messageHashes.add(
+                        messageHash
+                );
+
+                messageIDs.add(
+                        messageID
+                );
 
                 totalMessagesSent++;
 
                 return "Message successfully sent.";
             }
 
+
             case 2 -> {
 
                 disregardedMessages.add(this);
-                messageHashes.add(messageHash);
-                messageIDs.add(messageID);
+
+                messageHashes.add(
+                        messageHash
+                );
+
+                messageIDs.add(
+                        messageID
+                );
 
                 return "Press 0 to delete the message.";
             }
 
+
             case 3 -> {
 
-                // storeMessage adds the message to storedMessages
-                // and saves the array to the JSON file.
+                // Adds the message to storedMessages
+                // and saves it to the JSON file.
                 storeMessage();
 
-                messageHashes.add(messageHash);
-                messageIDs.add(messageID);
+                messageHashes.add(
+                        messageHash
+                );
+
+                messageIDs.add(
+                        messageID
+                );
 
                 return "Message successfully stored.";
             }
 
+
             default -> {
+
                 return "Invalid option.";
             }
         }
     }
 
-    // Stores the current message in the JSON file
+
+    // ==========================================================
+    // STORE MESSAGE IN JSON
+    // ==========================================================
+
+    /*
+     * Stores the current message in the storedMessages
+     * ArrayList and saves the complete array to JSON.
+     */
     public void storeMessage() {
 
         storedMessages.add(this);
 
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .create();
+        Gson gson
+                = new GsonBuilder()
+                        .setPrettyPrinting()
+                        .create();
 
-        try (FileWriter writer = new FileWriter(JSON_FILE)) {
+        try (FileWriter writer
+                = new FileWriter(JSON_FILE)) {
 
-            gson.toJson(storedMessages, writer);
+            gson.toJson(
+                    storedMessages,
+                    writer
+            );
 
         } catch (IOException e) {
 
@@ -209,244 +370,385 @@ public final class Message {
         }
     }
 
-    // Returns all the details of the message
+
+    // ==========================================================
+    // PRINT MESSAGE DETAILS
+    // ==========================================================
+
+    /*
+     * Returns all message information.
+     *
+     * Sender has been added for Part 3(a).
+     */
     public String printMessages() {
 
-        return "Message ID: " + messageID
-                + "\nMessage Hash: " + messageHash
-                + "\nRecipient: " + recipient
-                + "\nMessage: " + messageText;
+        return "Message ID: "
+                + messageID
+                + "\nMessage Hash: "
+                + messageHash
+                + "\nSender: "
+                + sender
+                + "\nRecipient: "
+                + recipient
+                + "\nMessage: "
+                + messageText;
     }
 
-    // Returns the total number of successfully sent messages
+
+    // ==========================================================
+    // TOTAL SENT MESSAGES
+    // ==========================================================
+
     public static int returnTotalMessagess() {
+
         return totalMessagesSent;
     }
 
-    // Returns the sent messages array
+
+    // ==========================================================
+    // ARRAY GETTERS
+    // ==========================================================
+
     public static ArrayList<Message> getSentMessages() {
+
         return sentMessages;
     }
 
-    // Returns the disregarded messages array
+
     public static ArrayList<Message> getDisregardedMessages() {
+
         return disregardedMessages;
     }
 
-    // Returns the stored messages array
+
     public static ArrayList<Message> getStoredMessages() {
+
         return storedMessages;
     }
 
-    // Returns the message hashes array
+
     public static ArrayList<String> getMessageHashes() {
+
         return messageHashes;
     }
 
-    // Returns the message IDs array
+
     public static ArrayList<String> getMessageIDs() {
+
         return messageIDs;
     }
-// ==========================================================
-// PART 3 - MESSAGE MANAGEMENT METHODS
-// ==========================================================
-
-// Displays all successfully sent messages
-public static String displaySentMessages() {
-
-    if (sentMessages.isEmpty()) {
-        return "No sent messages available.";
-    }
-
-    StringBuilder result = new StringBuilder();
-
-    for (Message message : sentMessages) {
-        result.append(message.getMessageText())
-              .append("\n");
-    }
-
-    return result.toString();
-}
 
 
-// Finds the longest stored message
-public static String getLongestStoredMessage() {
+    // ==========================================================
+    // PART 3 - DISPLAY SENT MESSAGES
+    // ==========================================================
 
-    if (storedMessages.isEmpty()) {
-        return "No stored messages available.";
-    }
+    public static String displaySentMessages() {
 
-    Message longestMessage = storedMessages.get(0);
+        if (sentMessages.isEmpty()) {
 
-    for (Message message : storedMessages) {
-
-        if (message.getMessageText().length()
-                > longestMessage.getMessageText().length()) {
-
-            longestMessage = message;
+            return "No sent messages available.";
         }
-    }
 
-    return longestMessage.getMessageText();
-}
+        StringBuilder result
+                = new StringBuilder();
 
+        for (Message message : sentMessages) {
 
-// Searches for a message using the Message ID
-public static String searchByMessageID(String searchID) {
+            result.append(
+                    message.getMessageText()
+            );
 
-    // Search sent messages
-    for (Message message : sentMessages) {
-
-        if (message.getMessageID().equals(searchID)) {
-
-            return "Recipient: "
-                    + message.getRecipient()
-                    + "\nMessage: "
-                    + message.getMessageText();
+            result.append("\n");
         }
+
+        return result.toString();
     }
 
-    // Search stored messages
-    for (Message message : storedMessages) {
 
-        if (message.getMessageID().equals(searchID)) {
+    // ==========================================================
+    // PART 3(a) - DISPLAY ALL STORED MESSAGES
+    // ==========================================================
 
-            return "Recipient: "
-                    + message.getRecipient()
-                    + "\nMessage: "
-                    + message.getMessageText();
+    /*
+     * Displays the Sender and Recipient as required
+     * by Part 3(a), together with the other message
+     * information.
+     */
+    public static String displayStoredMessages() {
+
+        if (storedMessages.isEmpty()) {
+
+            return "No stored messages found.";
         }
-    }
 
-    return "Message ID not found.";
-}
+        StringBuilder result
+                = new StringBuilder();
 
+        for (Message message : storedMessages) {
 
-// Searches stored messages using the recipient cellphone number
-public static String searchByRecipient(String searchRecipient) {
+            result.append("Message ID: ")
+                    .append(message.getMessageID())
+                    .append("\n");
 
-    StringBuilder result = new StringBuilder();
+            result.append("Message Hash: ")
+                    .append(message.getMessageHash())
+                    .append("\n");
 
-    for (Message message : storedMessages) {
+            result.append("Sender: ")
+                    .append(message.getSender())
+                    .append("\n");
 
-        if (message.getRecipient().equals(searchRecipient)) {
+            result.append("Recipient: ")
+                    .append(message.getRecipient())
+                    .append("\n");
 
-            result.append(message.getMessageText())
-                  .append("\n");
+            result.append("Message: ")
+                    .append(message.getMessageText())
+                    .append("\n");
+
+            result.append(
+                    "------------------------------\n"
+            );
         }
+
+        return result.toString();
     }
 
-    if (result.length() == 0) {
-        return "No messages found for this recipient.";
-    }
 
-    return result.toString();
-}
+    // ==========================================================
+    // PART 3(b) - LONGEST STORED MESSAGE
+    // ==========================================================
 
+    public static String getLongestStoredMessage() {
 
-// Deletes a stored message using its Message Hash
-public static String deleteByMessageHash(String searchHash) {
+        if (storedMessages.isEmpty()) {
 
-    for (int i = 0; i < storedMessages.size(); i++) {
-
-        Message message = storedMessages.get(i);
-
-        if (message.getMessageHash().equals(searchHash)) {
-
-            storedMessages.remove(i);
-
-            messageHashes.remove(message.getMessageHash());
-            messageIDs.remove(message.getMessageID());
-
-            // Update the JSON file after deletion
-            saveStoredMessagesToJSON();
-
-            return "Message successfully deleted.";
+            return "No stored messages available.";
         }
+
+        Message longestMessage
+                = storedMessages.get(0);
+
+        for (Message message : storedMessages) {
+
+            if (message.getMessageText().length()
+                    > longestMessage
+                            .getMessageText()
+                            .length()) {
+
+                longestMessage = message;
+            }
+        }
+
+        return longestMessage.getMessageText();
     }
 
-    return "Message Hash not found.";
-}
+
+    // ==========================================================
+    // PART 3(c) - SEARCH BY MESSAGE ID
+    // ==========================================================
+
+    /*
+     * Searches both sent and stored messages
+     * using the Message ID.
+     */
+    public static String searchByMessageID(
+            String searchID) {
+
+        // Search sent messages
+        for (Message message : sentMessages) {
+
+            if (message.getMessageID()
+                    .equals(searchID)) {
+
+                return "Recipient: "
+                        + message.getRecipient()
+                        + "\nMessage: "
+                        + message.getMessageText();
+            }
+        }
 
 
-// Creates a complete report of stored messages
-public static String displayStoredMessageReport() {
+        // Search stored messages
+        for (Message message : storedMessages) {
 
-    if (storedMessages.isEmpty()) {
-        return "No stored messages available.";
+            if (message.getMessageID()
+                    .equals(searchID)) {
+
+                return "Recipient: "
+                        + message.getRecipient()
+                        + "\nMessage: "
+                        + message.getMessageText();
+            }
+        }
+
+        return "Message ID not found.";
     }
 
-    StringBuilder report = new StringBuilder();
 
-    report.append("========== STORED MESSAGE REPORT ==========\n");
+    // ==========================================================
+    // PART 3(d) - SEARCH BY RECIPIENT
+    // ==========================================================
 
-    for (Message message : storedMessages) {
+    /*
+     * Searches stored messages using the
+     * recipient cellphone number.
+     */
+    public static String searchByRecipient(
+            String searchRecipient) {
 
-        report.append("Message ID: ")
-              .append(message.getMessageID())
-              .append("\n");
+        StringBuilder result
+                = new StringBuilder();
 
-        report.append("Message Hash: ")
-              .append(message.getMessageHash())
-              .append("\n");
+        for (Message message : storedMessages) {
 
-        report.append("Recipient: ")
-              .append(message.getRecipient())
-              .append("\n");
+            if (message.getRecipient()
+                    .equals(searchRecipient)) {
 
-        report.append("Message: ")
-              .append(message.getMessageText())
-              .append("\n");
+                result.append(
+                        message.getMessageText()
+                );
 
-        report.append("-------------------------------------------\n");
+                result.append("\n");
+            }
+        }
+
+        if (result.length() == 0) {
+
+            return "No messages found for this recipient.";
+        }
+
+        return result.toString();
     }
 
-    return report.toString();
-}
+
+    // ==========================================================
+    // PART 3(e) - DELETE MESSAGE USING MESSAGE HASH
+    // ==========================================================
+
+    public static String deleteByMessageHash(
+            String searchHash) {
+
+        for (int i = 0;
+                i < storedMessages.size();
+                i++) {
+
+            Message message
+                    = storedMessages.get(i);
+
+            if (message.getMessageHash()
+                    .equals(searchHash)) {
+
+                storedMessages.remove(i);
+
+                messageHashes.remove(
+                        message.getMessageHash()
+                );
+
+                messageIDs.remove(
+                        message.getMessageID()
+                );
+
+                // Update JSON after deletion
+                saveStoredMessagesToJSON();
+
+                return "Message successfully deleted.";
+            }
+        }
+
+        return "Message Hash not found.";
+    }
 
 
-// Saves the current stored message list back to the JSON file
-private static void saveStoredMessagesToJSON() {
+    // ==========================================================
+    // PART 3(f) - STORED MESSAGE REPORT
+    // ==========================================================
 
-    Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .create();
+    /*
+     * Displays a complete report containing:
+     *
+     * Message ID
+     * Message Hash
+     * Sender
+     * Recipient
+     * Message
+     */
+    public static String displayStoredMessageReport() {
 
-    try (FileWriter writer = new FileWriter(JSON_FILE)) {
+        if (storedMessages.isEmpty()) {
 
-        gson.toJson(storedMessages, writer);
+            return "No stored messages available.";
+        }
 
-    } catch (IOException e) {
+        StringBuilder report
+                = new StringBuilder();
 
-        System.out.println(
-                "Error updating stored messages: "
-                + e.getMessage()
+        report.append(
+                "========== STORED MESSAGE REPORT ==========\n"
         );
+
+        for (Message message : storedMessages) {
+
+            report.append("Message ID: ")
+                    .append(message.getMessageID())
+                    .append("\n");
+
+            report.append("Message Hash: ")
+                    .append(message.getMessageHash())
+                    .append("\n");
+
+            report.append("Sender: ")
+                    .append(message.getSender())
+                    .append("\n");
+
+            report.append("Recipient: ")
+                    .append(message.getRecipient())
+                    .append("\n");
+
+            report.append("Message: ")
+                    .append(message.getMessageText())
+                    .append("\n");
+
+            report.append(
+                    "-------------------------------------------\n"
+            );
+        }
+
+        return report.toString();
     }
+
+
+    // ==========================================================
+    // SAVE STORED MESSAGES AFTER DELETION
+    // ==========================================================
+
+    /*
+     * Rewrites the stored_messages.json file
+     * after a stored message has been deleted.
+     */
+    private static void saveStoredMessagesToJSON() {
+
+        Gson gson
+                = new GsonBuilder()
+                        .setPrettyPrinting()
+                        .create();
+
+        try (FileWriter writer
+                = new FileWriter(JSON_FILE)) {
+
+            gson.toJson(
+                    storedMessages,
+                    writer
+            );
+
+        } catch (IOException e) {
+
+            System.out.println(
+                    "Error updating stored messages: "
+                    + e.getMessage()
+            );
+        }
     }
 
-// Displays all stored messages
-public static String displayStoredMessages() {
-
-    if (storedMessages.isEmpty()) {
-        return "No stored messages found.";
-    }
-
-    StringBuilder result = new StringBuilder();
-
-    for (Message message : storedMessages) {
-
-        result.append("Message ID: ")
-                .append(message.getMessageID())
-                .append("\nMessage Hash: ")
-                .append(message.getMessageHash())
-                .append("\nRecipient: ")
-                .append(message.getRecipient())
-                .append("\nMessage: ")
-                .append(message.getMessageText())
-                .append("\n------------------------------\n");
-    }
-
-    return result.toString();
-}
 } // End of Message class

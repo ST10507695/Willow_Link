@@ -1,44 +1,50 @@
 [
   {
-    "messageID": "9458763819",
+    "messageID": "9821401457",
     "messageNumber": 0,
+    "sender": "",
     "recipient": "+27718693002",
     "messageText": "Hi Mike, can you join us for dinner tonight?",
-    "messageHash": "94:0:HITONIGHT"
+    "messageHash": "98:0:HITONIGHT"
   },
   {
-    "messageID": "1238153104",
+    "messageID": "8172269327",
     "messageNumber": 27,
+    "sender": "",
     "recipient": "+27838884567",
     "messageText": "Stored report message",
-    "messageHash": "12:27:STOREDMESSAGE"
+    "messageHash": "81:27:STOREDMESSAGE"
   },
   {
-    "messageID": "9077873927",
+    "messageID": "2920608621",
     "messageNumber": 21,
+    "sender": "",
     "recipient": "+27838884567",
     "messageText": "Ok, I am leaving without you.",
-    "messageHash": "90:21:OKYOU"
+    "messageHash": "29:21:OKYOU"
   },
   {
-    "messageID": "9955374437",
+    "messageID": "9127400726",
     "messageNumber": 22,
+    "sender": "",
     "recipient": "+27838884567",
     "messageText": "Where are you? You are late! I have asked you to be on time.",
-    "messageHash": "99:22:WHERETIME"
+    "messageHash": "91:22:WHERETIME"
   },
   {
-    "messageID": "4840235694",
+    "messageID": "8508861868",
     "messageNumber": 24,
+    "sender": "",
     "recipient": "+27838884567",
     "messageText": "Where are you? You are late! I have asked you to be on time.",
-    "messageHash": "48:24:WHERETIME"
+    "messageHash": "85:24:WHERETIME"
   },
   {
-    "messageID": "4610752101",
+    "messageID": "3239174917",
     "messageNumber": 25,
+    "sender": "",
     "recipient": "+27838884567",
     "messageText": "Ok, I am leaving without you.",
-    "messageHash": "46:25:OKYOU"
+    "messageHash": "32:25:OKYOU"
   }
 ]

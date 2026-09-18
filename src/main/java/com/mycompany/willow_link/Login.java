@@ -110,4 +110,10 @@ public String returnLoginStatus(String enteredUsername,
 
     return "Username or password incorrect, please try again.";
 }
+
+// Returns the registered user's cellphone number
+public String getCellPhoneNumber() {
+    return cellPhoneNumber;
 }
+
+} // End of Login class
