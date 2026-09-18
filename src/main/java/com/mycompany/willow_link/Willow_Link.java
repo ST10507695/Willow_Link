@@ -158,10 +158,9 @@ public class Willow_Link {
                             "========== QUICKCHAT MENU =========="
                     );
                     System.out.println("1. Send Messages");
-                    System.out.println(
-                            "2. Show recently sent messages"
-                    );
+                    System.out.println("2. Show recently sent messages");
                     System.out.println("3. Quit");
+                    System.out.println("4. Stored Messages");
 
                     System.out.print("Enter your choice: ");
                     menuChoice = input.nextInt();
@@ -308,13 +307,121 @@ public class Willow_Link {
                             );
 
                             break;
+                        case 4:
 
+                            System.out.println();
+                            System.out.println(
+                                    "========== STORED MESSAGES =========="
+                            );
+
+                            System.out.println(
+                                    "1. Display all stored messages"
+                            );
+                            System.out.println(
+                                    "2. Display longest stored message"
+                            );
+                            System.out.println(
+                                    "3. Search by Message ID"
+                            );
+                            System.out.println(
+                                    "4. Search by recipient"
+                            );
+                            System.out.println(
+                                    "5. Delete message by hash"
+                            );
+                            System.out.println(
+                                    "6. Display stored message report"
+                            );
+
+                            System.out.print(
+                                    "Enter your choice: "
+                            );
+
+                            int storedChoice = input.nextInt();
+                            input.nextLine();
+
+                            switch (storedChoice) {
+
+                                case 1:
+                                    System.out.println(
+                                            Message.displayStoredMessages()
+                                    );
+                                    break;
+
+                                case 2:
+                                    System.out.println(
+                                            "Longest stored message:"
+                                    );
+                                    System.out.println(
+                                            Message.getLongestStoredMessage()
+                                    );
+                                    break;
+
+                                case 3:
+                                    System.out.print(
+                                            "Enter Message ID: "
+                                    );
+
+                                    String searchID =
+                                            input.nextLine();
+
+                                    System.out.println(
+                                            Message.searchByMessageID(
+                                                    searchID
+                                            )
+                                    );
+                                    break;
+
+                                case 4:
+                                    System.out.print(
+                                            "Enter recipient cellphone number: "
+                                    );
+
+                                    String searchRecipient =
+                                            input.nextLine();
+
+                                    System.out.println(
+                                            Message.searchByRecipient(
+                                                    searchRecipient
+                                            )
+                                    );
+                                    break;
+
+                                case 5:
+                                    System.out.print(
+                                            "Enter Message Hash: "
+                                    );
+
+                                    String deleteHash =
+                                            input.nextLine();
+
+                                    System.out.println(
+        Message.deleteByMessageHash(
+                deleteHash
+        )
+);
+                                    break;
+
+                                case 6:
+                                    System.out.println(
+                                            Message.displayStoredMessageReport()
+                                    );
+                                    break;
+
+                                default:
+                                    System.out.println(
+                                            "Invalid stored message option."
+                                    );
+                            }
+
+                            break;
+                            
                         default:
 
                             System.out.println();
                             System.out.println(
                                     "Invalid option. "
-                                    + "Please select 1, 2 or 3."
+                                    + "Please select 1, 2, 3 or 4."
                             );
                     }
                 }

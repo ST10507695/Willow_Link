@@ -423,5 +423,30 @@ private static void saveStoredMessagesToJSON() {
                 + e.getMessage()
         );
     }
+    }
+
+// Displays all stored messages
+public static String displayStoredMessages() {
+
+    if (storedMessages.isEmpty()) {
+        return "No stored messages found.";
+    }
+
+    StringBuilder result = new StringBuilder();
+
+    for (Message message : storedMessages) {
+
+        result.append("Message ID: ")
+                .append(message.getMessageID())
+                .append("\nMessage Hash: ")
+                .append(message.getMessageHash())
+                .append("\nRecipient: ")
+                .append(message.getRecipient())
+                .append("\nMessage: ")
+                .append(message.getMessageText())
+                .append("\n------------------------------\n");
+    }
+
+    return result.toString();
 }
 } // End of Message class
